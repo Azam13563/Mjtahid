@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مجتهد - تخطيط المذاكرة</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6A5ACD;
+            --secondary: #4B0082;
+            --dark: #121212;
+            --darker: #0A0A0A;
+            --light: #1E1E1E;
+            --text: #E0E0E0;
+            --accent: #20B2AA;
+            --success: #32CD32;
+            --warning: #FFD700;
+            --danger: #DC143C;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            text-shadow: 0 0 10px rgba(106, 90, 205, 0.5);
+        }
+        
+        .logo-icon {
+            font-size: 2.8rem;
+            color: var(--primary);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+        
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+        
+        nav a:hover, nav a.active {
+            background: rgba(106, 90, 205, 0.2);
+            color: var(--primary);
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(106, 90, 205, 0.4);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: rgba(106, 90, 205, 0.1);
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .sidebar {
+            background: rgba(30, 30, 30, 0.6);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 15px;
+        }
+        
+        .sidebar-menu a {
+            color: var(--text);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(106, 90, 205, 0.2);
+            color: var(--primary);
+        }
+        
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .welcome-banner {
+            background: linear-gradient(135deg, rgba(106, 90, 205, 0.3) 0%, rgba(75, 0, 130, 0.3) 100%);
+            border-radius: 15px;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: rotate(30deg);
+        }
+        
+        .welcome-content h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .welcome-content p {
+            opacity: 0.8;
+            max-width: 600px;
+        }
+        
+        .planning-section {
+            background: rgba(30, 30, 30, 0.6);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .section-header h2 {
+            font-size: 1.8rem;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            background: rgba(106, 90, 205, 0.2);
+            color: var(--primary);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .form-group label {
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-group label i {
+            color: var(--primary);
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(106, 90, 205, 0.3);
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 20px;
+            grid-column: span 2;
+        }
+        
+        .goals-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .goal-item {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            border-left: 4px solid var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .goal-info h3 {
+            margin-bottom: 5px;
+            color: var(--accent);
+        }
+        
+        .goal-meta {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .goal-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .goal-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .goal-btn {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-edit {
+            background: rgba(32, 178, 170, 0.2);
+            color: var(--accent);
+        }
+        
+        .btn-delete {
+            background: rgba(220, 20, 60, 0.2);
+            color: var(--danger);
+        }
+        
+        .study-plan {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .plan-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            border-top: 4px solid var(--accent);
+        }
+        
+        .plan-card h3 {
+            color: var(--accent);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .plan-details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .plan-detail {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .plan-detail:last-child {
+            border-bottom: none;
+        }
+        
+        .progress-container {
+            margin-top: 15px;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            border-radius: 4px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            background: rgba(30, 30, 30, 0.6);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 5px 15px rgba(106, 90, 205, 0.3);
+        }
+        
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .stat-header i {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+        
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-title {
+            font-size: 1rem;
+            opacity: 0.7;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        @media (max-width: 900px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            nav ul {
+                gap: 15px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                grid-column: span 1;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .user-actions {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .welcome-banner {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .goal-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .goal-actions {
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-graduation-cap logo-icon"></i>
+                <h1>مجتهد</h1>
+            </div>
+            
+            <nav>
+                <ul>
+                    <li><a href="home.html">الرئيسية</a></li>
+                    <li><a href="c2.html">موادي</a></li>
+                    <li><a href="#" class="active">التخطيط</a></li>
+                    <li><a href="#">التذكيرات</a></li>
+                    <li><a href="#">الإحصائيات</a></li>
+                </ul>
+            </nav>
+            
+            <div class="user-actions">
+               <a href="index.html">   <button class="btn btn-outline">تسجيل الدخول</button></a>
+               <a href="index.html">   <button class="btn btn-primary">إنشاء حساب</button></a>
+            </div>
+        </header>
+        
+        <div class="dashboard">
+            <div class="sidebar">
+                <h2><i class="fas fa-th-large"></i> القائمة</h2>
+                <ul class="sidebar-menu">
+                    <li><a href="home.html"><i class="fas fa-home"></i> الرئيسية</a></li>
+                    <li><a href="c2.html"><i class="fas fa-book"></i> تسجيل المواد</a></li>
+                    <li><a href="#" class="active"><i class="fas fa-calendar-alt"></i> تخطيط المذاكرة</a></li>
+                  
+                    <li><a href="#"><i class="fas fa-bell"></i> التذكيرات</a></li>
+                           <li><a href="AI.html"> <i class="fas fa-microchip"></i></i> AI</a></li>
+                    <li><a href="#"><i class="fas fa-cog"></i> الإعدادات</a></li>
+                </ul>
+            </div>
+            
+            <div class="main-content">
+                <div class="welcome-banner">
+                    <div class="welcome-content">
+                        <h2>تخطيط المذاكرة والأهداف</h2>
+                        <p>قم بتخطيط جلسات المذاكرة ووضع أهداف ذكية لتحقيق أقصى استفادة من وقت الدراسة.</p>
+                    </div>
+                    <div class="welcome-actions">
+                        <button class="btn btn-primary">خطة جديدة</button>
+                    </div>
+                </div>
+                
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <div class="stat-value">7</div>
+                        <div class="stat-title">الأهداف المسجلة</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-value">3</div>
+                        <div class="stat-title">أهداف مكتملة</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-value">42%</div>
+                        <div class="stat-title">معدل الإنجاز</div>
+                    </div>
+                </div>
+                
+                <div class="planning-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-bullseye"></i> تخطيط المذاكرة</h2>
+                    </div>
+                    
+                    <div class="tabs">
+                        <div class="tab active" data-tab="goals">الأهداف</div>
+                        <div class="tab" data-tab="study-plan">خطة المذاكرة</div>
+                        <div class="tab" data-tab="progress">تتبع التقدم</div>
+                    </div>
+                    
+                    <div class="tab-content active" id="goals">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="goal-title"><i class="fas fa-pencil-alt"></i> عنوان الهدف</label>
+                                <input type="text" id="goal-title" placeholder="أدخل عنوان الهدف">
+                            </div>
+                            <div class="form-group">
+                                <label for="goal-subject"><i class="fas fa-book"></i> المادة</label>
+                                <select id="goal-subject">
+                                    <option value="">اختر المادة</option>
+                                    <option value="math">الرياضيات</option>
+                                    <option value="physics">الفيزياء</option>
+                                    <option value="chemistry">الكيمياء</option>
+                                    <option value="biology">الأحياء</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="goal-desc"><i class="fas fa-align-left"></i> وصف الهدف</label>
+                                <textarea id="goal-desc" placeholder="أدخل وصفاً مفصلاً للهدف"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="goal-deadline"><i class="fas fa-calendar"></i> الموعد النهائي</label>
+                                <input type="date" id="goal-deadline">
+                            </div>
+                            <div class="form-group">
+                                <label for="goal-priority"><i class="fas fa-exclamation-circle"></i> الأولوية</label>
+                                <select id="goal-priority">
+                                    <option value="low">منخفضة</option>
+                                    <option value="medium">متوسطة</option>
+                                    <option value="high">عالية</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="goal-status"><i class="fas fa-tasks"></i> الحالة</label>
+                                <select id="goal-status">
+                                    <option value="not-started">لم يبدأ بعد</option>
+                                    <option value="in-progress">قيد التقدم</option>
+                                    <option value="completed">مكتمل</option>
+                                </select>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn btn-outline">إعادة تعيين</button>
+                                <button class="btn btn-primary" id="saveGoal">حفظ الهدف</button>
+                            </div>
+                        </div>
+                        
+                        <div class="goals-list">
+                            <div class="goal-item">
+                                <div class="goal-info">
+                                    <h3>إنهاء فصل التفاضل والتكامل</h3>
+                                    <p>إكمال جميع تمارين الفصل الخامس من كتاب الرياضيات</p>
+                                    <div class="goal-meta">
+                                        <span><i class="fas fa-book"></i> الرياضيات</span>
+                                        <span><i class="fas fa-calendar"></i> 2023-12-15</span>
+                                        <span><i class="fas fa-exclamation-circle"></i> عالية</span>
+                                    </div>
+                                </div>
+                                <div class="goal-actions">
+                                    <button class="goal-btn btn-edit"><i class="fas fa-edit"></i></button>
+                                    <button class="goal-btn btn-delete"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                            
+                            <div class="goal-item">
+                                <div class="goal-info">
+                                    <h3>مراجعة التجارب الكيميائية</h3>
+                                    <p>مراجعة وتلخيص 10 تجارب كيميائية للامتحان العملي</p>
+                                    <div class="goal-meta">
+                                        <span><i class="fas fa-book"></i> الكيمياء</span>
+                                        <span><i class="fas fa-calendar"></i> 2023-12-10</span>
+                                        <span><i class="fas fa-exclamation-circle"></i> متوسطة</span>
+                                    </div>
+                                </div>
+                                <div class="goal-actions">
+                                    <button class="goal-btn btn-edit"><i class="fas fa-edit"></i></button>
+                                    <button class="goal-btn btn-delete"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                            
+                            <div class="goal-item">
+                                <div class="goal-info">
+                                    <h3>حل نماذج امتحانات السنوات السابقة</h3>
+                                    <p>حل 5 نماذج امتحانات سابقة لمادة الفيزياء</p>
+                                    <div class="goal-meta">
+                                        <span><i class="fas fa-book"></i> الفيزياء</span>
+                                        <span><i class="fas fa-calendar"></i> 2023-12-20</span>
+                                        <span><i class="fas fa-exclamation-circle"></i> عالية</span>
+                                    </div>
+                                </div>
+                                <div class="goal-actions">
+                                    <button class="goal-btn btn-edit"><i class="fas fa-edit"></i></button>
+                                    <button class="goal-btn btn-delete"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="study-plan">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="plan-subject"><i class="fas fa-book"></i> المادة</label>
+                                <select id="plan-subject">
+                                    <option value="">اختر المادة</option>
+                                    <option value="math">الرياضيات</option>
+                                    <option value="physics">الفيزياء</option>
+                                    <option value="chemistry">الكيمياء</option>
+                                    <option value="biology">الأحياء</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="plan-topic"><i class="fas fa-file-alt"></i> الموضوع</label>
+                                <input type="text" id="plan-topic" placeholder="أدخل الموضوع">
+                            </div>
+                            <div class="form-group">
+                                <label for="plan-date"><i class="fas fa-calendar"></i> التاريخ</label>
+                                <input type="date" id="plan-date">
+                            </div>
+                            <div class="form-group">
+                                <label for="plan-time"><i class="fas fa-clock"></i> الوقت</label>
+                                <input type="time" id="plan-time">
+                            </div>
+                            <div class="form-group">
+                                <label for="plan-duration"><i class="fas fa-hourglass-half"></i> المدة (دقائق)</label>
+                                <input type="number" id="plan-duration" placeholder="المدة بالدقائق">
+                            </div>
+                            <div class="form-group">
+                                <label for="plan-priority"><i class="fas fa-exclamation-circle"></i> الأولوية</label>
+                                <select id="plan-priority">
+                                    <option value="low">منخفضة</option>
+                                    <option value="medium">متوسطة</option>
+                                    <option value="high">عالية</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="plan-desc"><i class="fas fa-align-left"></i> الوصف</label>
+                                <textarea id="plan-desc" placeholder="أدخل وصفاً للجلسة"></textarea>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn btn-outline">إعادة تعيين</button>
+                                <button class="btn btn-primary" id="savePlan">حفظ الخطة</button>
+                            </div>
+                        </div>
+                        
+                        <div class="study-plan">
+                            <div class="plan-card">
+                                <h3><i class="fas fa-calculator"></i> الرياضيات</h3>
+                                <div class="plan-details">
+                                    <div class="plan-detail">
+                                        <span>الموضوع:</span>
+                                        <span>التفاضل والتكامل</span>
+                                    </div>
+                                    <div class="plan-detail">
+                                        <span>التاريخ:</span>
+                                        <span>2023-12-05</span>
+                                    </div>
+                                    <div class="plan-detail">
+                                        <span>الوقت:</span>
+                                        <span>16:00 - 18:00</span>
+                                    </div>
+                                    <div class="plan-detail">
+                                        <span>المدة:</span>
+                                        <span>120 دقيقة</span>
+                                    </div>
+                                </div>
+                                <div class="progress-container">
+                                    <div class="progress-info">
+                                        <span>التقدم</span>
+                                        <span>60%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress" style="width: 60%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="plan-card">
+                                <h3><i class="fas fa-atom"></i> الكيمياء</h3>
+                                <div class="plan-details">
+                                    <div class="plan-detail">
+                                        <span>الموضوع:</span>
+                                        <span>التفاعلات الكيميائية</span>
+                                    </div>
+                                    <div class="plan-detail">
+                                        <span>التاريخ:</span>
+                                        <span>2023-12-06</span>
+                                    </div>
+                                    <div class="plan-detail">
+                                        <span>الوقت:</span>
+                                        <span>10:00 - 11:30</span>
+                                    </div>
+                                    <div class="plan-detail">
+                                        <span>المدة:</span>
+                                        <span>90 دقيقة</span>
+                                    </div>
+                                </div>
+                                <div class="progress-container">
+                                    <div class="progress-info">
+                                        <span>التقدم</span>
+                                        <span>30%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress" style="width: 30%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="progress">
+                        <h3>تحليل التقدم في المذاكرة</h3>
+                        <p>هنا يمكنك تتبع تقدمك في تحقيق الأهداف وإنجاز خطط المذاكرة.</p>
+                        <!-- سيتم إضافة رسوم بيانية ومؤشرات أداء هنا -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2023 مجتهد. جميع الحقوق محفوظة.</p>
+            <p>نظام تنظيم الدراسة المتكامل - صمم بخبرة لتحقيق أقصى استفادة من وقت الدراسة</p>
+        </footer>
+    </div>
+
+    <script>
+        // تأثيرات تفاعلية بسيطة
+        document.addEventListener('DOMContentLoaded', function() {
+            // نظام التبويبات
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // إلغاء تفعيل جميع التبويبات والمحتويات
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // تفعيل التبويب والمحتوى المحدد
+                    this.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // محاكاة حفظ الهدف
+            document.getElementById('saveGoal').addEventListener('click', function() {
+                const goalTitle = document.getElementById('goal-title').value;
+                
+                if (!goalTitle) {
+                    alert('يرجى إدخال عنوان الهدف');
+                    return;
+                }
+                
+                // في التطبيق الحقيقي، هنا سيتم إرسال البيانات إلى الخادم
+                alert('تم حفظ الهدف بنجاح: ' + goalTitle);
+                
+                // إعادة تعيين الحقول
+                document.getElementById('goal-title').value = '';
+                document.getElementById('goal-subject').value = '';
+                document.getElementById('goal-desc').value = '';
+                document.getElementById('goal-deadline').value = '';
+                document.getElementById('goal-priority').value = 'low';
+                document.getElementById('goal-status').value = 'not-started';
+            });
+            
+            // محاكاة حفظ خطة المذاكرة
+            document.getElementById('savePlan').addEventListener('click', function() {
+                const planSubject = document.getElementById('plan-subject').value;
+                const planTopic = document.getElementById('plan-topic').value;
+                
+                if (!planSubject || !planTopic) {
+                    alert('يرجى إدخال المادة والموضوع');
+                    return;
+                }
+                
+                // في التطبيق الحقيقي، هنا سيتم إرسال البيانات إلى الخادم
+                alert('تم حفظ خطة المذاكرة بنجاح: ' + planTopic + ' - ' + planSubject);
+                
+                // إعادة تعيين الحقول
+                document.getElementById('plan-subject').value = '';
+                document.getElementById('plan-topic').value = '';
+                document.getElementById('plan-date').value = '';
+                document.getElementById('plan-time').value = '';
+                document.getElementById('plan-duration').value = '';
+                document.getElementById('plan-priority').value = 'low';
+                document.getElementById('plan-desc').value = '';
+            });
+        });
+    </script>
+</body>
+</html>

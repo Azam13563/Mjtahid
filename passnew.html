@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مجتهد - تغيير كلمة المرور</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6A5ACD;
+            --primary-light: #8378e0;
+            --secondary: #4B0082;
+            --dark: #121212;
+            --darker: #0A0A0A;
+            --light: #1E1E1E;
+            --text: #E0E0E0;
+            --text-light: #FFFFFF;
+            --accent: #20B2AA;
+            --success: #32CD32;
+            --warning: #FFD700;
+            --danger: #DC143C;
+            --card-bg: rgba(30, 30, 30, 0.9);
+            --input-bg: rgba(0, 0, 0, 0.3);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* أشكال زخرفية في الخلفية */
+        .bg-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+        }
+        
+        .shape-1 {
+            width: 500px;
+            height: 500px;
+            background: var(--primary);
+            top: -250px;
+            right: -250px;
+        }
+        
+        .shape-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--accent);
+            bottom: -200px;
+            left: -200px;
+        }
+        
+        .shape-3 {
+            width: 300px;
+            height: 300px;
+            background: var(--secondary);
+            top: 50%;
+            left: 40%;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 450px;
+            z-index: 10;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px 35px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .logo h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            text-shadow: 0 0 15px rgba(106, 90, 205, 0.5);
+        }
+        
+        .logo-icon {
+            font-size: 2.8rem;
+            color: var(--primary);
+            animation: pulse 2s infinite;
+            filter: drop-shadow(0 0 5px var(--primary));
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .header p {
+            opacity: 0.8;
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-light);
+        }
+        
+        .form-group label i {
+            color: var(--primary);
+            width: 20px;
+            text-align: center;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: var(--input-bg);
+            color: var(--text);
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(106, 90, 205, 0.3);
+            background: rgba(0, 0, 0, 0.4);
+        }
+        
+        .password-container {
+            position: relative;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text);
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-password:hover {
+            opacity: 1;
+            color: var(--primary);
+        }
+        
+        .password-strength {
+            margin-top: 10px;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+        
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        
+        .password-strength-text {
+            font-size: 0.8rem;
+            margin-top: 5px;
+            text-align: left;
+        }
+        
+        .password-requirements {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .password-requirements ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .password-requirements li {
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .password-requirements li i {
+            font-size: 0.8rem;
+            width: 16px;
+        }
+        
+        .requirement-met {
+            color: var(--success);
+        }
+        
+        .requirement-not-met {
+            color: var(--text);
+            opacity: 0.6;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            font-size: 1.1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.6s ease;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(106, 90, 205, 0.5);
+        }
+        
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        .submit-btn:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .submit-btn:disabled:hover::before {
+            left: -100%;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+            animation: messageSlide 0.5s ease forwards;
+        }
+        
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .success {
+            background: rgba(50, 205, 50, 0.2);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+        
+        .error {
+            background: rgba(220, 20, 60, 0.2);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+        }
+        
+        .info {
+            background: rgba(32, 178, 170, 0.2);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
+        
+        .back-to-login {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .back-to-login a {
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-to-login a:hover {
+            color: var(--primary-light);
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 500px) {
+            .card {
+                padding: 30px 25px;
+            }
+            
+            .logo h1 {
+                font-size: 2rem;
+            }
+            
+            .logo-icon {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- الأشكال الزخرفية في الخلفية -->
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+    
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap logo-icon"></i>
+                    <h1>مجتهد</h1>
+                </div>
+                <p>تعيين كلمة مرور جديدة لحسابك</p>
+            </div>
+            
+            <div class="message" id="message"></div>
+            
+            <form id="changePasswordForm">
+                <div class="form-group">
+                    <label for="newPassword"><i class="fas fa-key"></i> كلمة المرور الجديدة</label>
+                    <div class="password-container">
+                        <input type="password" id="newPassword" required placeholder="أدخل كلمة المرور الجديدة">
+                        <span class="toggle-password" id="toggleNewPassword">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                    
+                    <div class="password-strength">
+                        <div class="password-strength-bar" id="passwordStrengthBar"></div>
+                    </div>
+                    <div class="password-strength-text" id="passwordStrengthText">قوة كلمة المرور</div>
+                    
+                    <div class="password-requirements">
+                        <p>يجب أن تحتوي كلمة المرور على:</p>
+                        <ul>
+                            <li id="reqLength"><i class="fas fa-check-circle requirement-not-met"></i> 8 أحرف على الأقل</li>
+                            <li id="reqUpperCase"><i class="fas fa-check-circle requirement-not-met"></i> حرف كبير واحد على الأقل</li>
+                            <li id="reqNumber"><i class="fas fa-check-circle requirement-not-met"></i> رقم واحد على الأقل</li>
+                            <li id="reqSpecialChar"><i class="fas fa-check-circle requirement-not-met"></i> رمز خاص واحد على الأقل (!@#$%^&*)</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword"><i class="fas fa-lock"></i> تأكيد كلمة المرور الجديدة</label>
+                    <div class="password-container">
+                        <input type="password" id="confirmPassword" required placeholder="أعد إدخال كلمة المرور الجديدة">
+                        <span class="toggle-password" id="toggleConfirmPassword">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                    <div id="passwordMatchText" class="password-strength-text"></div>
+                </div>
+                
+                <button type="submit" class="submit-btn" id="submitButton" disabled>تعيين كلمة المرور</button>
+            </form>
+            
+            <div class="back-to-login">
+                <a href="index.html"><i class="fas fa-arrow-right"></i> العودة إلى تسجيل الدخول</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            // إظهار/إخفاء كلمة المرور
+            setupPasswordToggle('toggleNewPassword', 'newPassword');
+            setupPasswordToggle('toggleConfirmPassword', 'confirmPassword');
+            
+            // التحقق من قوة كلمة المرور
+            document.getElementById('newPassword').addEventListener('input', checkPasswordStrength);
+            
+            // التحقق من تطابق كلمات المرور
+            document.getElementById('confirmPassword').addEventListener('input', checkPasswordMatch);
+            
+            // إرسال نموذج تغيير كلمة المرور
+            document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                if (!newPassword || !confirmPassword) {
+                    showMessage('يرجى ملء جميع الحقول', 'error');
+                    return;
+                }
+                
+                if (newPassword !== confirmPassword) {
+                    showMessage('كلمات المرور غير متطابقة', 'error');
+                    return;
+                }
+                
+                if (!isPasswordStrong(newPassword)) {
+                    showMessage('كلمة المرور الجديدة غير قوية بما فيه الكفاية', 'error');
+                    return;
+                }
+                
+                // محاكاة تغيير كلمة المرور
+                showMessage('تم تعيين كلمة المرور بنجاح', 'success');
+                
+                // إعادة تعيين الحقول
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+                
+                // تعطيل الزر مرة أخرى
+                document.getElementById('submitButton').disabled = true;
+                
+                // في التطبيق الحقيقي، سيتم إرسال طلب إلى الخادم هنا
+                // simulateChangePassword(newPassword);
+                
+                // إعادة توجيه بعد فترة وجيزة
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            });
+        });
+        
+        // إعداد إظهار/إخفاء كلمة المرور
+        function setupPasswordToggle(toggleId, inputId) {
+            const toggleBtn = document.getElementById(toggleId);
+            const passwordInput = document.getElementById(inputId);
+            
+            toggleBtn.addEventListener('click', function() {
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+                } else {
+                    passwordInput.type = 'password';
+                    toggleBtn.innerHTML = '<i class="fas fa-eye"></i>';
+                }
+            });
+        }
+        
+        // التحقق من قوة كلمة المرور
+        function checkPasswordStrength() {
+            const password = document.getElementById('newPassword').value;
+            const strengthBar = document.getElementById('passwordStrengthBar');
+            const strengthText = document.getElementById('passwordStrengthText');
+            
+            // قواعد التحقق
+            const hasMinLength = password.length >= 8;
+            const hasUpperCase = /[A-Z]/.test(password);
+            const hasNumber = /\d/.test(password);
+            const hasSpecialChar = /[!@#$%^&*]/.test(password);
+            
+            // تحديث أيقونات المتطلبات
+            document.getElementById('reqLength').innerHTML = hasMinLength ? 
+                '<i class="fas fa-check-circle requirement-met"></i> 8 أحرف على الأقل' : 
+                '<i class="fas fa-check-circle requirement-not-met"></i> 8 أحرف على الأقل';
+                
+            document.getElementById('reqUpperCase').innerHTML = hasUpperCase ? 
+                '<i class="fas fa-check-circle requirement-met"></i> حرف كبير واحد على الأقل' : 
+                '<i class="fas fa-check-circle requirement-not-met"></i> حرف كبير واحد على الأقل';
+                
+            document.getElementById('reqNumber').innerHTML = hasNumber ? 
+                '<i class="fas fa-check-circle requirement-met"></i> رقم واحد على الأقل' : 
+                '<i class="fas fa-check-circle requirement-not-met"></i> رقم واحد على الأقل';
+                
+            document.getElementById('reqSpecialChar').innerHTML = hasSpecialChar ? 
+                '<i class="fas fa-check-circle requirement-met"></i> رمز خاص واحد على الأقل (!@#$%^&*)' : 
+                '<i class="fas fa-check-circle requirement-not-met"></i> رمز خاص واحد على الأقل (!@#$%^&*)';
+            
+            // حساب قوة كلمة المرور
+            let strength = 0;
+            if (password.length > 0) strength += 20;
+            if (hasMinLength) strength += 20;
+            if (hasUpperCase) strength += 20;
+            if (hasNumber) strength += 20;
+            if (hasSpecialChar) strength += 20;
+            
+            // تحديث شريط القوة
+            strengthBar.style.width = strength + '%';
+            
+            // تحديد لون الشريط والنص
+            if (strength < 40) {
+                strengthBar.style.background = '#DC143C';
+                strengthText.textContent = 'كلمة مرور ضعيفة';
+                strengthText.style.color = '#DC143C';
+            } else if (strength < 80) {
+                strengthBar.style.background = '#FFD700';
+                strengthText.textContent = 'كلمة مرور متوسطة';
+                strengthText.style.color = '#FFD700';
+            } else {
+                strengthBar.style.background = '#32CD32';
+                strengthText.textContent = 'كلمة مرور قوية';
+                strengthText.style.color = '#32CD32';
+            }
+            
+            // التحقق من إمكانية تمكين زر الإرسال
+            checkFormValidity();
+        }
+        
+        // التحقق من تطابق كلمات المرور
+        function checkPasswordMatch() {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const matchText = document.getElementById('passwordMatchText');
+            
+            if (confirmPassword.length === 0) {
+                matchText.textContent = '';
+                return;
+            }
+            
+            if (newPassword === confirmPassword) {
+                matchText.textContent = 'كلمات المرور متطابقة';
+                matchText.style.color = '#32CD32';
+            } else {
+                matchText.textContent = 'كلمات المرور غير متطابقة';
+                matchText.style.color = '#DC143C';
+            }
+            
+            // التحقق من إمكانية تمكين زر الإرسال
+            checkFormValidity();
+        }
+        
+        // التحقق من قوة كلمة المرور (للتحقق النهائي)
+        function isPasswordStrong(password) {
+            const hasMinLength = password.length >= 8;
+            const hasUpperCase = /[A-Z]/.test(password);
+            const hasNumber = /\d/.test(password);
+            const hasSpecialChar = /[!@#$%^&*]/.test(password);
+            
+            return hasMinLength && hasUpperCase && hasNumber && hasSpecialChar;
+        }
+        
+        // التحقق من صحة النموذج وتمكين/تعطيل زر الإرسال
+        function checkFormValidity() {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const submitButton = document.getElementById('submitButton');
+            
+            if (newPassword && confirmPassword && 
+                newPassword === confirmPassword && isPasswordStrong(newPassword)) {
+                submitButton.disabled = false;
+            } else {
+                submitButton.disabled = true;
+            }
+        }
+        
+        // إظهار رسالة
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = message;
+            messageDiv.className = 'message';
+            
+            if (type === 'success') {
+                messageDiv.classList.add('success');
+            } else if (type === 'error') {
+                messageDiv.classList.add('error');
+            } else if (type === 'info') {
+                messageDiv.classList.add('info');
+            }
+            
+            messageDiv.style.display = 'block';
+            
+            // إخفاء الرسالة بعد 5 ثواني
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
