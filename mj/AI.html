@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مجتهد - المساعد الذكي للتعلم</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6A5ACD;
+            --primary-light: #8378DB;
+            --secondary: #4B0082;
+            --dark: #121212;
+            --darker: #0A0A0A;
+            --light: #1E1E1E;
+            --text: #E0E0E0;
+            --text-light: #F0F0F0;
+            --accent: #20B2AA;
+            --success: #32CD32;
+            --warning: #FFD700;
+            --danger: #DC143C;
+            --ai-bubble: #2D2D4F;
+            --user-bubble: #4B0082;
+            --chat-bg: #1a1a2e;
+            --card-bg: rgba(30, 30, 30, 0.8);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            --glass-bg: rgba(25, 25, 35, 0.7);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            margin-bottom: 10px;
+            border-radius: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 0.8s ease;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo h1 {
+            font-size: 2.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            text-shadow: 0 2px 10px rgba(106, 90, 205, 0.3);
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(106, 90, 205, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(106, 90, 205, 0.4);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: rgba(106, 90, 205, 0.1);
+        }
+        
+        .btn-back {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        /* واجهة المحادثة */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 70vh;
+            background: var(--chat-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: slideUp 0.5s ease;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .chat-header {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .chat-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(106, 90, 205, 0.3);
+            animation: pulse 2s infinite;
+        }
+        
+        .chat-header-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-header-info h3 {
+            color: var(--text-light);
+            font-size: 1.2rem;
+        }
+        
+        .chat-header-info p {
+            color: var(--primary-light);
+            font-size: 0.9rem;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="%231a1a2e" width="100" height="100"/><path fill="%2323233d" d="M0 50L50 0L100 50L50 100Z"/></svg>');
+            background-size: cover;
+        }
+        
+        .message {
+            max-width: 75%;
+            padding: 15px 20px;
+            border-radius: 18px;
+            animation: fadeIn 0.4s ease;
+            position: relative;
+            line-height: 1.6;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .ai-message {
+            align-self: flex-start;
+            background: var(--ai-bubble);
+            border-bottom-right-radius: 5px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .user-message {
+            align-self: flex-end;
+            background: var(--user-bubble);
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 4px 15px rgba(75, 0, 130, 0.3);
+        }
+        
+        .message-time {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            margin-top: 5px;
+            text-align: right;
+        }
+        
+        .chat-input-container {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            gap: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .chat-input {
+            flex: 1;
+            display: flex;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 25px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .chat-input:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(106, 90, 205, 0.2);
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            background: transparent;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .chat-input input:focus {
+            outline: none;
+        }
+        
+        .chat-input-actions {
+            display: flex;
+        }
+        
+        .chat-input button {
+            padding: 0 20px;
+            border: none;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .chat-input button:hover {
+            background: var(--secondary);
+        }
+        
+        .attach-btn {
+            padding: 0 15px;
+            border: none;
+            background: transparent;
+            color: var(--text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .attach-btn:hover {
+            color: var(--primary);
+        }
+        
+        /* عناصر المحادثة التفاعلية */
+        .chat-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .chat-btn {
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            font-size: 0.9rem;
+        }
+        
+        .chat-btn:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(106, 90, 205, 0.3);
+        }
+        
+        .suggestion-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .suggestion-card {
+            flex: 1;
+            min-width: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .suggestion-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .suggestion-card i {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(106, 90, 205, 0.05);
+            transform: translateY(-2px);
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .file-preview {
+            max-width: 100%;
+            max-height: 200px;
+            margin-top: 15px;
+            border-radius: 10px;
+            display: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* قسم الاختبار */
+        .test-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: none;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.5s ease;
+            position: relative;
+        }
+        
+        .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .test-box {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .question {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .question:hover {
+            transform: translateY(-2px);
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .question-type {
+            background: var(--primary);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .option {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .option:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateX(5px);
+        }
+        
+        .option.selected {
+            background: var(--primary);
+            border-color: var(--primary-light);
+            box-shadow: 0 4px 10px rgba(106, 90, 205, 0.3);
+        }
+        
+        .fill-blank {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: var(--text);
+            width: 100%;
+            margin-top: 15px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .fill-blank:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(106, 90, 205, 0.2);
+        }
+        
+        .test-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .results {
+            text-align: center;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            margin-top: 30px;
+            display: none;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .score {
+            font-size: 3.5rem;
+            font-weight: bold;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 20px 0;
+            text-shadow: 0 2px 10px rgba(106, 90, 205, 0.3);
+        }
+        
+        .progress-bar {
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 25px 0;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .progress {
+            height: 100%;
+            background: var(--gradient);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 1s ease;
+            box-shadow: 0 0 10px rgba(106, 90, 205, 0.5);
+        }
+        
+        .review-answers {
+            margin-top: 30px;
+            text-align: right;
+        }
+        
+        .question-review {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .correct-answer {
+            color: var(--success);
+            margin-top: 10px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .incorrect-answer {
+            color: var(--danger);
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .user-answer {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+        }
+        
+        .processing {
+            display: inline-block;
+            margin-left: 10px;
+        }
+        
+        .processing .dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+            margin: 0 3px;
+            animation: bounce 1.5s infinite ease-in-out;
+        }
+        
+        .processing .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .processing .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        /* تأثيرات إضافية */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(106, 90, 205, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(106, 90, 205, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(106, 90, 205, 0); }
+        }
+        
+        /* شريط التمرير */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .nav-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .message {
+                max-width: 85%;
+            }
+            
+            .test-actions {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .suggestion-cards {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-graduation-cap logo-icon"></i>
+                <h1>مجتهد - المساعد الذكي للتعلم</h1>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-primary" onclick="location.href='home.html'">
+                    <i class="fas fa-home"></i>
+                    العودة للتطبيق
+                </button>
+                <button class="btn btn-outline" onclick="resetChat()">
+                    <i class="fas fa-comments"></i>
+                    محادثة جديدة
+                </button>
+            </div>
+        </header>
+        
+        <div class="chat-container" id="chatContainer">
+            <div class="chat-header">
+                <div class="chat-avatar">
+                 <i class="fas fa-microchip"></i>
+                </div>
+                <div class="chat-header-info">
+                    <h3>مساعد مجتهد</h3>
+                    <p>متصل الآن</p>
+                </div>
+                <div class="processing">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <!-- الرسائل ستعرض هنا -->
+            </div>
+            
+            <div class="chat-input-container">
+                <div class="chat-input">
+                    <button class="attach-btn" onclick="document.getElementById('fileInput').click()">
+                        <i class="fas fa-paperclip"></i>
+                    </button>
+                    <input type="text" id="messageInput" placeholder="اكتب رسالتك هنا..." onkeypress="handleKeyPress(event)">
+                    <input type="file" id="fileInput" style="display: none;" onchange="handleFileUpload(this.files[0])" accept=".pdf,.doc,.docx,.ppt,.pptx,.jpg,.jpeg,.png,.txt">
+                    <button onclick="sendMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section" id="testSection">
+            <div class="test-header">
+                <h2><i class="fas fa-file-alt"></i> الاختبار التقييمي</h2>
+                <button class="btn btn-back" onclick="backToChat()">
+                    <i class="fas fa-arrow-right"></i>
+                    العودة إلى المحادثة
+                </button>
+            </div>
+            
+            <div id="testContent">
+                <div class="test-box">
+                    <p>سيظهر الاختبار هنا بعد معالجة الملف وإنشاء الملخص. سيتم إنشاء أسئلة مخصصة بناءً على محتوى الملف الذي تقوم برفعه.</p>
+                </div>
+            </div>
+            
+            <div class="test-actions">
+                <button class="btn" id="prevBtn" style="display: none;" onclick="prevQuestion()">
+                    <i class="fas fa-arrow-right"></i>
+                    السابق
+                </button>
+                <button class="btn" id="nextBtn" style="display: none;" onclick="nextQuestion()">
+                    التالي
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <button class="btn btn-primary" id="submitBtn" style="display: none;" onclick="submitTest()">
+                    <i class="fas fa-paper-plane"></i>
+                    تسليم الإجابات
+                </button>
+            </div>
+            
+            <div class="results" id="results">
+                <h3>نتيجة الاختبار</h3>
+                <div class="score" id="score">0/0</div>
+                
+                <div class="progress-bar">
+                    <div class="progress" id="progressBar"></div>
+                </div>
+                
+                <p id="resultMessage"></p>
+                
+                <div class="review-answers" id="reviewAnswers">
+                    <h4>مراجعة الإجابات:</h4>
+                    <div id="answersReview"></div>
+                </div>
+                
+                <button class="btn btn-primary" style="margin-top: 20px;" onclick="resetTest()">
+                    <i class="fas fa-redo"></i>
+                    بدء اختبار جديد
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // بيانات المحادثة والاختبار
+        let chatMessages = [];
+        let testQuestions = [];
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let currentFile = null;
+        let chatState = 'idle'; // idle, waiting_for_file, file_uploaded, test_generated, waiting_for_summary, waiting_for_homework
+        
+        // تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            // إضافة رسالة ترحيبية من الذكاء الاصطناعي
+            addAIMessage("مرحباً! أنا مساعدك الذكي في منصة مجتهد. أنا هنا لمساعدتك في الواجبات وتلخيص الكتب وصناعة اختبارات للمواد حسب طلبك.");
+            
+            // إضافة رسالة توضيحية
+            setTimeout(() => {
+                addAIMessage(`
+                    <div class="suggestion-cards">
+                        <div class="suggestion-card" onclick="sendSuggestion('اختبرني')">
+                            <i class="fas fa-question-circle"></i>
+                            <h4>إنشاء اختبار</h4>
+                            <p>اصنع اختباراً مخصصاً من ملفك</p>
+                        </div>
+                        <div class="suggestion-card" onclick="sendSuggestion('لخّص لي هذا الملف')">
+                            <i class="fas fa-file-alt"></i>
+                            <h4>تلخيص الملفات</h4>
+                            <p>احصل على ملخص لأي ملف تقدمه</p>
+                        </div>
+                        <div class="suggestion-card" onclick="sendSuggestion('ساعدني في واجبي')">
+                            <i class="fas fa-tasks"></i>
+                            <h4>مساعدة في الواجبات</h4>
+                            <p>احصل على مساعدة في حل الواجبات</p>
+                        </div>
+                    </div>
+                `);
+            }, 1000);
+        });
+        
+        // إرسال اقتراح
+        function sendSuggestion(suggestion) {
+            document.getElementById('messageInput').value = suggestion;
+            sendMessage();
+        }
+        
+        // إرسال رسالة
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (message === '') return;
+            
+            // إضافة رسالة المستخدم للدردشة
+            addUserMessage(message);
+            
+            // مسح حقل الإدخال
+            input.value = '';
+            
+            // معالجة الرسالة
+            processMessage(message);
+        }
+        
+        // التعامل مع ضغط المفتاح
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+                event.preventDefault();
+            }
+        }
+        
+        // إضافة رسالة المستخدم
+        function addUserMessage(message) {
+            const chatMessagesElement = document.getElementById('chatMessages');
+            const messageElement = document.createElement('div');
+            messageElement.className = 'message user-message';
+            
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            messageElement.innerHTML = `
+                <div>${message}</div>
+                <div class="message-time">${time}</div>
+            `;
+            
+            chatMessagesElement.appendChild(messageElement);
+            
+            // Scroll to bottom
+            chatMessagesElement.scrollTop = chatMessagesElement.scrollHeight;
+            
+            // حفظ الرسالة
+            chatMessages.push({ type: 'user', content: message, time: time });
+        }
+        
+        // إضافة رسالة الذكاء الاصطناعي
+        function addAIMessage(message, withActions = false) {
+            const chatMessagesElement = document.getElementById('chatMessages');
+            const messageElement = document.createElement('div');
+            messageElement.className = 'message ai-message';
+            
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            messageElement.innerHTML = `
+                <div>${message}</div>
+                <div class="message-time">${time}</div>
+            `;
+            
+            if (withActions) {
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'chat-actions';
+                actionsDiv.innerHTML = `
+                    <div class="chat-btn" onclick="handleAction('نعم')">نعم</div>
+                    <div class="chat-btn" onclick="handleAction('لا')">لا</div>
+                `;
+                messageElement.appendChild(actionsDiv);
+            }
+            
+            chatMessagesElement.appendChild(messageElement);
+            
+            // Scroll to bottom
+            chatMessagesElement.scrollTop = chatMessagesElement.scrollHeight;
+            
+            // حفظ الرسالة
+            chatMessages.push({ type: 'ai', content: message, time: time });
+        }
+        
+        // معالجة الرسالة
+        function processMessage(message) {
+            // تحقق من الكلمات المفتاحية لبدء الاختبار
+            const testKeywords = ['اختبرني', 'اختبار', 'ابدأ اختبار', 'امتحان', 'ابدأ الامتحان', 'اختبارني', 'اصنع اختبار'];
+            const summaryKeywords = ['لخص', 'تلخيص', 'ملخص', 'اختصار', 'لخّص', 'لخص لي', 'ابي ملخص'];
+            const homeworkKeywords = ['واجب', 'مساعدة', 'اساعد', 'حل', 'مسألة', 'ساعدني', 'واجبات', 'سؤال'];
+            
+            const isTestRequest = testKeywords.some(keyword => message.includes(keyword));
+            const isSummaryRequest = summaryKeywords.some(keyword => message.includes(keyword));
+            const isHomeworkRequest = homeworkKeywords.some(keyword => message.includes(keyword));
+            
+            if (isTestRequest) {
+                // حالة طلب اختبار
+                chatState = 'waiting_for_file';
+                
+                setTimeout(() => {
+                    addAIMessage("رائع! لإنشاء اختبار مخصص، أحتاج منك رفع ملف PDF أو صورة تحتوي على المحتوى الذي تريد الاختبار عليه.");
+                    
+                    setTimeout(() => {
+                        addAIMessage(`
+                            <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                                <div class="upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <p>انقر هنا لرفع ملف PDF أو صورة</p>
+                                <p class="small">يدعم PDF, Word, PowerPoint, الصور (JPG, PNG)</p>
+                            </div>
+                        `);
+                    }, 1000);
+                }, 1000);
+            } else if (isSummaryRequest) {
+                // حالة طلب تلخيص
+                chatState = 'waiting_for_summary';
+                
+                setTimeout(() => {
+                    addAIMessage("ممتاز! يمكنني مساعدتك في تلخيص الملفات. ما الملف الذي ترغب في تلخيصه؟");
+                    
+                    setTimeout(() => {
+                        addAIMessage(`
+                            <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                                <div class="upload-icon">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <p>انقر هنا لرفع الملف الذي تريد تلخيصه</p>
+                                <p class="small">يدعم PDF, Word, PowerPoint, النصوص</p>
+                            </div>
+                        `);
+                    }, 1000);
+                }, 1000);
+            } else if (isHomeworkRequest) {
+                // حالة طلب مساعدة في الواجب
+                chatState = 'waiting_for_homework';
+                
+                setTimeout(() => {
+                    addAIMessage("حسناً! يمكنني مساعدتك في حل الواجبات والمسائل. يمكنك إرسال سؤال الواجب كنص أو كصورة.");
+                    
+                    setTimeout(() => {
+                        addAIMessage(`
+                            <div class="chat-actions">
+                                <div class="chat-btn" onclick="addAIMessage('رجاءً اكتب سؤال الواجب في مربع الرسائل ثم اضغط إرسال')">كتابة السؤال</div>
+                                <div class="chat-btn" onclick="addAIMessage('رجاءً اضغط على زر المرفقات (الدبوس) لرفع صورة السؤال')">رفع صورة السؤال</div>
+                            </div>
+                        `);
+                    }, 1000);
+                }, 1000);
+            } else {
+                // معالجة الرسائل العادية
+                if (chatState === 'waiting_for_homework') {
+                    // إذا كان المستخدم يرسل سؤال واجب كنص
+                    setTimeout(() => {
+                        addAIMessage("جاري تحليل سؤال الواجب<span class='processing'><span class='dot'></span><span class='dot'></span><span class='dot'></span></span>");
+                        
+                        // محاكاة معالجة السؤال
+                        setTimeout(() => {
+                            // مسح آخر رسالة (التي تحتوي على المؤشر)
+                            const chatMessagesElement = document.getElementById('chatMessages');
+                            if (chatMessagesElement.lastChild) {
+                                chatMessagesElement.removeChild(chatMessagesElement.lastChild);
+                            }
+                            
+                            // عرض حل الواجب
+                            addAIMessage("لقد قمت بتحليل سؤالك. إليك الحل والشرح:");
+                            setTimeout(() => {
+                                addAIMessage("بناءً على السؤال الذي طرحته، الحل هو كالتالي: [هذا نموذج للحل الذي سأقدمه]. هل تحتاج إلى شرح مفصل لأي جزء؟");
+                            }, 1000);
+                            
+                            chatState = 'idle';
+                        }, 3000);
+                    }, 1000);
+                } else {
+                    // رد عام
+                    setTimeout(() => {
+                        addAIMessage("شكراً على رسالتك. يمكنني مساعدتك في إنشاء اختبارات، تلخيص الملفات، أو المساعدة في الواجبات. ما الذي تحتاجه؟");
+                    }, 1000);
+                }
+            }
+        }
+        
+        // التعامل مع رفع الملف
+        function handleFileUpload(file) {
+            if (!file) return;
+            
+            currentFile = file;
+            
+            // عرض معلومات الملف في المحادثة
+            addUserMessage(`تم رفع الملف: ${file.name}`);
+            
+            // معالجة الملف حسب حالة المحادثة
+            if (chatState === 'waiting_for_file') {
+                processTestFile();
+            } else if (chatState === 'waiting_for_summary') {
+                processSummaryFile();
+            } else if (chatState === 'waiting_for_homework') {
+                processHomeworkFile();
+            } else {
+                // إذا تم رفع ملف دون طلب محدد
+                addAIMessage("تم استلام ملفك. ما الذي تريد أن أفعل به؟");
+                setTimeout(() => {
+                    addAIMessage(`
+                        <div class="chat-actions">
+                            <div class="chat-btn" onclick="handleAction('إنشاء اختبار')">إنشاء اختبار</div>
+                            <div class="chat-btn" onclick="handleAction('تلخيص الملف')">تلخيص الملف</div>
+                        </div>
+                    `, true);
+                }, 1000);
+            }
+        }
+        
+        // معالجة ملف الاختبار
+        function processTestFile() {
+            setTimeout(() => {
+                addAIMessage("جاري معالجة الملف وإنشاء الأسئلة<span class='processing'><span class='dot'></span><span class='dot'></span><span class='dot'></span></span>");
+                
+                // محاكاة معالجة الملف
+                setTimeout(() => {
+                    // مسح آخر رسالة (التي تحتوي على المؤشر)
+                    const chatMessagesElement = document.getElementById('chatMessages');
+                    if (chatMessagesElement.lastChild) {
+                        chatMessagesElement.removeChild(chatMessagesElement.lastChild);
+                    }
+                    
+                    // عرض رسالة نجاح المعالجة
+                    addAIMessage("تم معالجة الملف بنجاح! لقد قمت بإنشاء اختبار مكون من 5 أسئلة بناءً على المحتوى.");
+                    
+                    // عرض زر بدء الاختبار
+                    setTimeout(() => {
+                        addAIMessage(`
+                            <p>هل أنت مستعد لبدء الاختبار؟</p>
+                            <div class="chat-actions">
+                                <div class="chat-btn" onclick="startTest()">نعم، ابدأ الاختبار الآن</div>
+                                <div class="chat-btn" onclick="addAIMessage('حسناً، يمكنك بدء الاختبار في أي وقت عن طريق كتابة \'ابدأ الاختبار\'')">لاحقاً</div>
+                            </div>
+                        `, true);
+                    }, 1000);
+                    
+                    chatState = 'file_uploaded';
+                }, 3000);
+            }, 1000);
+        }
+        
+        // معالجة ملف التلخيص
+        function processSummaryFile() {
+            setTimeout(() => {
+                addAIMessage("جاري معالجة الملف وإنشاء الملخص<span class='processing'><span class='dot'></span><span class='dot'></span><span class='dot'></span></span>");
+                
+                // محاكاة معالجة الملف
+                setTimeout(() => {
+                    // مسح آخر رسالة (التي تحتوي على المؤشر)
+                    const chatMessagesElement = document.getElementById('chatMessages');
+                    if (chatMessagesElement.lastChild) {
+                        chatMessagesElement.removeChild(chatMessagesElement.lastChild);
+                    }
+                    
+                    // عرض رسالة نجاح المعالجة
+                    addAIMessage("تم معالجة الملف بنجاح! إليك الملخص الذي أنشأته:");
+                    
+                    // عرض الملخص
+                    setTimeout(() => {
+                        addAIMessage(`
+                            <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; margin: 10px 0;">
+                                <h4>ملخص الملف:</h4>
+                                <p>هذا ملخص للمحتوى الرئيسي في الملف الذي قمت برفعه. يحتوي على النقاط الأساسية والأفكار المهمة المستخلصة من المحتوى.</p>
+                                <ul>
+                                    <li>النقطة الرئيسية الأولى</li>
+                                    <li>النقطة الرئيسية الثانية</li>
+                                    <li>النقطة الرئيسية الثالثة</li>
+                                </ul>
+                                <p>هذا الملخص يغطي الجوانب الأساسية للموضوع ويعطيك نظرة شاملة على المحتوى.</p>
+                            </div>
+                            <p>هل تريد حفظ هذا الملخص أو مشاركته؟</p>
+                        `);
+                    }, 1000);
+                    
+                    chatState = 'idle';
+                }, 3000);
+            }, 1000);
+        }
+        
+        // معالجة ملف الواجب
+        function processHomeworkFile() {
+            setTimeout(() => {
+                addAIMessage("جاري تحليل سؤال الواجب<span class='processing'><span class='dot'></span><span class='dot'></span><span class='dot'></span></span>");
+                
+                // محاكاة معالجة الملف
+                setTimeout(() => {
+                    // مسح آخر رسالة (التي تحتوي على المؤشر)
+                    const chatMessagesElement = document.getElementById('chatMessages');
+                    if (chatMessagesElement.lastChild) {
+                        chatMessagesElement.removeChild(chatMessagesElement.lastChild);
+                    }
+                    
+                    // عرض حل الواجب
+                    addAIMessage("لقد قمت بتحليل سؤال الواجب من الصورة. إليك الحل والشرح:");
+                    setTimeout(() => {
+                        addAIMessage(`
+                            <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; margin: 10px 0;">
+                                <h4>حل المسألة:</h4>
+                                <p>بناءً على السؤال في الصورة، الحل هو كالتالي:</p>
+                                <ol>
+                                    <li>الخطوة الأولى للحل</li>
+                                    <li>الخطوة الثانية للحل</li>
+                                    <li>الخطوة الثالثة للحل</li>
+                                </ol>
+                                <p>والنتيجة النهائية هي [الناتج النهائي].</p>
+                            </div>
+                            <p>هل تحتاج إلى شرح مفصل لأي جزء من الحل؟</p>
+                        `);
+                    }, 1000);
+                    
+                    chatState = 'idle';
+                }, 3000);
+            }, 1000);
+        }
+        
+        // بدء الاختبار
+        function startTest() {
+            // إخفاء المحادثة
+            document.getElementById('chatContainer').style.display = 'none';
+            
+            // إظهار قسم الاختبار
+            document.getElementById('testSection').style.display = 'block';
+            
+            // إنشاء الاختبار
+            generateTest();
+        }
+        
+        // العودة إلى المحادثة
+        function backToChat() {
+            // إخفاء قسم الاختبار
+            document.getElementById('testSection').style.display = 'none';
+            
+            // إظهار المحادثة
+            document.getElementById('chatContainer').style.display = 'flex';
+            
+            // إضافة رسالة ترحيبية
+            addAIMessage("مرحباً بك مرة أخرى! هل تريد استكمال المحادثة؟");
+        }
+        
+        // إنشاء اختبار من الملخص
+        function generateTest() {
+            // محاكاة إنشاء اختبار بناءً على المحتوى المستخرج
+            testQuestions = [
+                {
+                    id: 1,
+                    type: 'multiple_choice',
+                    question: 'ما هي أكثر تقنيات التعلم فعالية حسب المحتوى؟',
+                    options: ['التعلم النشط والممارسة', 'القراءة السريعة', 'الحفظ التكراري', 'الاستماع السلبي'],
+                    correctAnswer: 0
+                },
+                {
+                    id: 2,
+                    type: 'multiple_choice',
+                    question: 'ما الذي يساعد على تعزيز الذاكرة طويلة المدى؟',
+                    options: ['التكرار المتباعد', 'الدراسة لساعات متواصلة', 'الحفظ قبل الامتحان بيوم', 'التركيز على موضوع واحد فقط'],
+                    correctAnswer: 0
+                },
+                {
+                    id: 3,
+                    type: 'fill_blank',
+                    question: '__________ هي عملية ربط المعلومات الجديدة بمعلومات موجودة مسبقاً في الذاكرة.',
+                    correctAnswer: 'الربط'
+                },
+                {
+                    id: 4,
+                    type: 'multiple_choice',
+                    question: 'ما أهمية أخذ فترات راحة خلال جلسات الدراسة؟',
+                    options: ['تعزيز retention المعلومات', 'إضاعة الوقت', 'تقليل التركيز', 'لا أهمية لها'],
+                    correctAnswer: 0
+                },
+                {
+                    id: 5,
+                    type: 'fill_blank',
+                    question: '__________ الذاتي يساعد على قياس مستوى الفهم وتحديد نقاط الضعف.',
+                    correctAnswer: 'الاختبار'
+                }
+            ];
+            
+            userAnswers = new Array(testQuestions.length).fill(null);
+            currentQuestion = 0;
+            
+            // عرض الأسئلة
+            displayCurrentQuestion();
+            
+            // إظهار أزرار التنقل والتسليم
+            document.getElementById('prevBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'inline-block';
+            document.getElementById('submitBtn').style.display = currentQuestion === testQuestions.length - 1 ? 'inline-block' : 'none';
+        }
+        
+        // عرض السؤال الحالي
+        function displayCurrentQuestion() {
+            const testContent = document.getElementById('testContent');
+            const question = testQuestions[currentQuestion];
+            
+            let questionHTML = `
+                <div class="question">
+                    <div class="question-header">
+                        <span>السؤال ${currentQuestion + 1} من ${testQuestions.length}</span>
+                        <span class="question-type">${question.type === 'multiple_choice' ? 'اختيار من متعدد' : 'ملء الفراغ'}</span>
+                    </div>
+                    <p>${question.question}</p>
+            `;
+            
+            if (question.type === 'multiple_choice') {
+                questionHTML += `<div class="options">`;
+                question.options.forEach((option, index) => {
+                    const isSelected = userAnswers[currentQuestion] === index;
+                    questionHTML += `
+                        <div class="option ${isSelected ? 'selected' : ''}" onclick="selectOption(${index})">
+                            ${String.fromCharCode(1632 + index)}) ${option}
+                        </div>
+                    `;
+                });
+                questionHTML += `</div>`;
+            } else {
+                questionHTML += `
+                    <input type="text" class="fill-blank" placeholder="اكتب الإجابة هنا..." 
+                           value="${userAnswers[currentQuestion] || ''}" 
+                           oninput="updateFillBlank(this.value)">
+                `;
+            }
+            
+            questionHTML += `</div>`;
+            testContent.innerHTML = questionHTML;
+            
+            // تحديث أزرار التنقل
+            document.getElementById('prevBtn').style.display = currentQuestion > 0 ? 'inline-block' : 'none';
+            document.getElementById('nextBtn').style.display = currentQuestion < testQuestions.length - 1 ? 'inline-block' : 'none';
+            document.getElementById('submitBtn').style.display = currentQuestion === testQuestions.length - 1 ? 'inline-block' : 'none';
+        }
+        
+        // اختيار option في أسئلة الاختيار
+        function selectOption(optionIndex) {
+            userAnswers[currentQuestion] = optionIndex;
+            displayCurrentQuestion();
+        }
+        
+        // تحديث إجابة fill blank
+        function updateFillBlank(value) {
+            userAnswers[currentQuestion] = value;
+        }
+        
+        // الانتقال إلى السؤال التالي
+        function nextQuestion() {
+            if (currentQuestion < testQuestions.length - 1) {
+                currentQuestion++;
+                displayCurrentQuestion();
+            }
+        }
+        
+        // الانتقال إلى السؤال السابق
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                displayCurrentQuestion();
+            }
+        }
+        
+        // تسليم الاختبار
+        function submitTest() {
+            let score = 0;
+            let reviewHTML = '';
+            
+            testQuestions.forEach((question, index) => {
+                if (question.type === 'multiple_choice') {
+                    if (userAnswers[index] === question.correctAnswer) {
+                        score++;
+                        reviewHTML += `
+                            <div class="question-review">
+                                <p><strong>السؤال ${index + 1}:</strong> ${question.question}</p>
+                                <p class="user-answer">إجابتك: ${question.options[userAnswers[index]]}</p>
+                                <p class="correct-answer"><i class="fas fa-check-circle"></i> إجابتك صحيحة</p>
+                            </div>
+                        `;
+                    } else {
+                        reviewHTML += `
+                            <div class="question-review">
+                                <p><strong>السؤال ${index + 1}:</strong> ${question.question}</p>
+                                <p class="user-answer">إجابتك: ${userAnswers[index] !== null ? question.options[userAnswers[index]] : 'لم تتم الإجابة'}</p>
+                                <p class="incorrect-answer"><i class="fas fa-times-circle"></i> الإجابة الصحيحة: ${question.options[question.correctAnswer]}</p>
+                            </div>
+                        `;
+                    }
+                } else {
+                    // معالجة أسئلة الفراغات
+                    const userAnswer = userAnswers[index] ? userAnswers[index].toLowerCase().trim() : '';
+                    const correctAnswer = question.correctAnswer.toLowerCase().trim();
+                    
+                    if (userAnswer === correctAnswer) {
+                        score++;
+                        reviewHTML += `
+                            <div class="question-review">
+                                <p><strong>السؤال ${index + 1}:</strong> ${question.question}</p>
+                                <p class="user-answer">إجابتك: ${userAnswers[index]}</p>
+                                <p class="correct-answer"><i class="fas fa-check-circle"></i> إجابتك صحيحة</p>
+                            </div>
+                        `;
+                    } else {
+                        reviewHTML += `
+                            <div class="question-review">
+                                <p><strong>السؤال ${index + 1}:</strong> ${question.question}</p>
+                                <p class="user-answer">إجابتك: ${userAnswers[index] || 'لم تتم الإجابة'}</p>
+                                <p class="incorrect-answer"><i class="fas fa-times-circle"></i> الإجابة الصحيحة: ${question.correctAnswer}</p>
+                            </div>
+                        `;
+                    }
+                }
+            });
+            
+            // عرض النتائج
+            const resultsDiv = document.getElementById('results');
+            const scoreDiv = document.getElementById('score');
+            const progressBar = document.getElementById('progressBar');
+            const resultMessage = document.getElementById('resultMessage');
+            const answersReview = document.getElementById('answersReview');
+            
+            scoreDiv.textContent = `${score}/${testQuestions.length}`;
+            const percentage = (score / testQuestions.length) * 100;
+            progressBar.style.width = `${percentage}%`;
+            
+            if (percentage >= 80) {
+                resultMessage.textContent = 'ممتاز! لديك فهم قوي للمادة.';
+            } else if (percentage >= 60) {
+                resultMessage.textContent = 'جيد جداً، ولكن يمكنك التحسين أكثر.';
+            } else if (percentage >= 40) {
+                resultMessage.textContent = 'ليس سيئاً، لكنك تحتاج إلى مزيد من المراجعة.';
+            } else {
+                resultMessage.textContent = 'يبدو أنك تحتاج إلى دراسة أكثر للمادة.';
+            }
+            
+            answersReview.innerHTML = reviewHTML;
+            resultsDiv.style.display = 'block';
+            
+            // إخفاء أسئلة الاختبار
+            document.getElementById('testContent').style.display = 'none';
+            document.getElementById('prevBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('submitBtn').style.display = 'none';
+        }
+        
+        // إعادة تعيين الاختبار
+        function resetTest() {
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('testContent').style.display = 'block';
+            
+            testQuestions = [];
+            userAnswers = [];
+            currentQuestion = 0;
+            
+            document.getElementById('prevBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('submitBtn').style.display = 'none';
+            
+            // العودة إلى المحادثة
+            document.getElementById('chatContainer').style.display = 'flex';
+            document.getElementById('testSection').style.display = 'none';
+            
+            // إضافة رسالة ترحيبية
+            addAIMessage("مرحباً بك مرة أخرى! هل تريد إنشاء اختبار جديد؟");
+        }
+        
+        // إعادة تعيين المحادثة
+        function resetChat() {
+            const chatMessagesElement = document.getElementById('chatMessages');
+            chatMessagesElement.innerHTML = '';
+            chatMessages = [];
+            
+            // إضافة رسالة ترحيبية
+            addAIMessage("مرحباً! أنا مساعدك الذكي في منصة مجتهد. أنا هنا لمساعدتك في الواجبات وتلخيص الكتب وصناعة اختبارات للمواد حسب طلبك.");
+            
+            // إضافة رسالة توضيحية
+            setTimeout(() => {
+                addAIMessage(`
+                    <div class="suggestion-cards">
+                        <div class="suggestion-card" onclick="sendSuggestion('اختبرني')">
+                            <i class="fas fa-question-circle"></i>
+                            <h4>إنشاء اختبار</h4>
+                            <p>اصنع اختباراً مخصصاً من ملفك</p>
+                        </div>
+                        <div class="suggestion-card" onclick="sendSuggestion('لخّص لي هذا الملف')">
+                            <i class="fas fa-file-alt"></i>
+                            <h4>تلخيص الملفات</h4>
+                            <p>احصل على ملخص لأي ملف تقدمه</p>
+                        </div>
+                        <div class="suggestion-card" onclick="sendSuggestion('ساعدني في واجبي')">
+                            <i class="fas fa-tasks"></i>
+                            <h4>مساعدة في الواجبات</h4>
+                            <p>احصل على مساعدة في حل الواجبات</p>
+                        </div>
+                    </div>
+                `);
+            }, 1000);
+            
+            // إعادة تعيين الحالة
+            chatState = 'idle';
+            currentFile = null;
+        }
+        
+        // التعامل مع الإجراءات في المحادثة
+        function handleAction(action) {
+            if (action === 'نعم') {
+                startTest();
+            } else if (action === 'إنشاء اختبار') {
+                processTestFile();
+            } else if (action === 'تلخيص الملف') {
+                processSummaryFile();
+            } else {
+                addAIMessage("حسناً، يمكنك بدء الاختبار في أي وقت عن طريق كتابة 'ابدأ الاختبار'");
+            }
+        }
+    </script>
+</body>
+</html>
